@@ -315,47 +315,54 @@ int main() {
     Station rame2("Volucite", 2, 500,500);
     Station rame3("Renouet", 3, 1200,1200);
     Station rame4("Argenta", 4, 1450,1450);
-    Station rame5("Rotombourg", 5,2000,2000);
-    Station rame6("Verdansk", 1, 0, 0);
-    Station rame7("Tarkov", 2, 500, 500);
-    Station rame8("Neuilly", 3, 1200, 1200);
-    Station rame9("Boutroux", 4, 1450, 1450);
-    Station rame10("", 5, 2000, 2000);
-    rame1.afficherInformations1();
-    rame2.afficherInformations1();
-    rame3.afficherInformations1();
-    rame4.afficherInformations1();
-    rame5.afficherInformations1();
-    vector<Station> stations = { rame1, rame2, rame3, rame4, rame5 };
-    Metro metro("Ligne A", 0, stations);
-    Metro metroB("Ligne ABis", 4, stations);
+    Station rame5("Rotombourg", 5,1800,1800);
+    Station rame6("Verdansk", 6, 0, 0);
+    Station rame7("Levski", 7, 856, 856);
+    Station rame8("Neuilly", 8, 1100, 1100);
+    Station rame9("Boutroux", 9, 1850, 1850);
+    vector<Station> LigneA = { rame1, rame2, rame3, rame4, rame5 };
+    vector<Station> ligneB = { rame6,rame7,rame8,rame9 };
+    Metro metro("Ligne A", 0, LigneA);
+    Metro metroB("Ligne B", 6, ligneB);
     thread metro1(&Metro::deplacer, &metro);
     thread metro2(&Metro::deplacer, &metroB);
     sf::RenderWindow window(sf::VideoMode(1920, 1080), "Système de métro");
+    //debut de la boucle SFML---------------------------------------
     while (window.isOpen()) {
         window.clear(sf::Color::White);
-        sf::RectangleShape metroShape(sf::Vector2f(75,25)); // Exemple de forme de métro (cercle de rayon 20 pixels)
-        metroShape.setFillColor(sf::Color::Red); // Couleur du métro (ici rouge)
-        if (metro.getPos() < 1920) {
-            metroShape.setPosition(metro.getPos(), 50);
-        }
-        if(metro.getPos()>=1920) {
-            metroShape.setPosition(metro.getPos()-1920, 200);
-        }
+        //création des deux metros----------------------
+        sf::RectangleShape metroShape(sf::Vector2f(75,25));
+        sf::RectangleShape metroShape2(sf::Vector2f(75, 25));
+        metroShape.setFillColor(sf::Color::Red);
+        metroShape2.setFillColor(sf::Color::Green);
+        //-----------------------------------------------
+        //déplacement graphique des metros---------------
+        metroShape.setPosition(metro.getPos(), 50);
+        metroShape2.setPosition(metroB.getPos(), 500);
         window.draw(metroShape);
-        // Dessin de la station
+        window.draw(metroShape2);
+        // Dessin de la station--------------------------
         sf::CircleShape stationShape(20);
         stationShape.setFillColor(sf::Color::Black);
-        sf::RectangleShape ligne(sf::Vector2f(1920, 5));
-        ligne.setPosition(0, 66);
-        ligne.setFillColor(sf::Color::Red);
-        window.draw(ligne);
-        for (int i = 0; i < stations.size(); i++) {
-            stationShape.setPosition(stations[i].getDistanceV1()+15,50);
+        sf::RectangleShape ligneARec(sf::Vector2f(1920, 5));
+        sf::RectangleShape ligneBRec(sf::Vector2f(1920, 5));
+        ligneARec.setPosition(0, 66);
+        ligneBRec.setPosition(0, 516);
+        ligneARec.setFillColor(sf::Color::Red);
+        ligneBRec.setFillColor(sf::Color::Green);
+        window.draw(ligneARec);
+        window.draw(ligneBRec);
+        for (int i = 0; i < LigneA.size(); i++) {
+            stationShape.setPosition(LigneA[i].getDistanceV1()+15,50);
+            window.draw(stationShape);
+        }
+        for (int i = 0; i < ligneB.size(); i++) {
+            stationShape.setPosition(ligneB[i].getDistanceV1() + 15, 500);
             window.draw(stationShape);
         }
         window.display();
     }
     metro1.join();
+    metro2.join();
     return 0;
 }
