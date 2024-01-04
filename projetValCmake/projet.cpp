@@ -337,7 +337,7 @@ int main() {
         metroShape2.setFillColor(sf::Color::Green);
         //-----------------------------------------------
         //déplacement graphique des metros---------------
-        metroShape.setPosition(metro.getPos(), 50);
+            metroShape.setPosition(metro.getPos(), 50);
         metroShape2.setPosition(metroB.getPos(), 500);
         window.draw(metroShape);
         window.draw(metroShape2);
@@ -366,3 +366,4 @@ int main() {
     metro2.join();
     return 0;
 }
+//fin programme
