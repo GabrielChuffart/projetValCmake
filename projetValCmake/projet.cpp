@@ -84,6 +84,9 @@ public:
     float getPos() {
         return(position);
     }
+    bool getVoie() {
+        return voie;
+    }
 
     //Fonction vitesse , gérant la déceleration et l'accéleration
     int Vitesse(int distanceVersProchaineStationBIS) {
@@ -368,23 +371,36 @@ int main() {
         window.draw(ligneBRec);
         sf::Text nomStation;
         sf::Text affPass;
+        sf::Text affPass2;
         affPass.setColor(sf::Color::Black);
+        affPass2.setColor(sf::Color::Black);
         affPass.setFont(Parisine);
+        affPass2.setFont(Parisine);
         nomStation.setFont(Parisine);
         nomStation.setCharacterSize(24);
         nomStation.setFillColor(sf::Color::Black);
-        if (metro.getStatInd() < LigneA.size() - 1) {
+
+        if (metro.getStatInd() < LigneA.size() - 1 || metro.getStatInd()-1 == 1) {
             affPass.setString("Prochain arrêt :" + LigneA[metro.getStatInd() + 1].getNom());
         }
-        if (metro.getStatInd() == LigneA.size() - 1) {
-            affPass.setString("Prochain arrêt :" + LigneA[metro.getStatInd() + -1].getNom());
+        if (metro.getStatInd() == LigneA.size() - 1 || metro.getVoie() == true) {
+            affPass.setString("Prochain arrêt :" + LigneA[metro.getStatInd()-1].getNom());
         }
+
+        if (metroB.getStatInd() < ligneB.size() - 1 || metroB.getStatInd()-1==6) {
+            affPass2.setString("Prochain arrêt :" + ligneB[metroB.getStatInd() + 1].getNom());
+        }
+        if (metroB.getStatInd() == ligneB.size() - 1 || metroB.getVoie() == true) {
+            affPass2.setString("Prochain arrêt :" + ligneB[metroB.getStatInd()-1].getNom());
+        }
+
         for (int i = 0; i < LigneA.size(); i++) {
             string nomStat = LigneA[i].getNom();
             nomStation.setString(nomStat);
             nomStation.setPosition(LigneA[i].getDistanceV1()-10, 85);
             stationShape.setPosition(LigneA[i].getDistanceV1()+15,50);
             affPass.setPosition(200, 700);
+            affPass2.setPosition(200, 800);
             window.draw(nomStation);
             window.draw(stationShape);
         }
@@ -408,6 +424,7 @@ int main() {
             window.draw(LigneAT);
             window.draw(LigneBT);
             window.draw(affPass);
+            window.draw(affPass2);
         }
 
         window.display();
