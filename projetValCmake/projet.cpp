@@ -1,5 +1,8 @@
 #include <iostream>
+#include <stdio.h>
 #include <vector>
+#include <stdlib.h>
+#include <time.h>
 #include <string>
 #include <chrono>
 #include <thread>
@@ -7,7 +10,6 @@
 #include <mutex>
 #include <SFML/Graphics/Font.hpp>
 using namespace std;
-
 //---- PARTIE CLASSE ET FONCTION ----
 
 //---- CLASSE STATION ----
@@ -254,6 +256,7 @@ public:
     }
 
     void gererPassagers() {
+        srand(time(NULL));
         // Faire descendre une partie des passagers actuels
         if (voie) {
             int passagersADescendre = rand() % (passager + 1); // Entre 1 et la moitié des passagers actuels
@@ -413,6 +416,16 @@ int main() {
             window.draw(nomStation);
             sf::Text LigneAT;
             sf::Text LigneBT;
+            sf::Text PassagerA;
+            sf::Text PassagerB;
+            PassagerA.setFont(Parisine);
+            PassagerB.setFont(Parisine);
+            PassagerA.setColor(sf::Color::Black);
+            PassagerB.setColor(sf::Color::Black);
+            PassagerA.setString("Passagers à bord :" + to_string(metro.getPass()));
+            PassagerB.setString("Passagers à bord :" + to_string(metroB.getPass()));
+            PassagerA.setPosition(800, 700);
+            PassagerB.setPosition(800, 800);
             LigneAT.setFont(Parisine);
             LigneBT.setFont(Parisine);
             LigneAT.setString("Ligne A :");
@@ -425,6 +438,8 @@ int main() {
             window.draw(LigneBT);
             window.draw(affPass);
             window.draw(affPass2);
+            window.draw(PassagerA);
+            window.draw(PassagerB);
         }
 
         window.display();
