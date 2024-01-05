@@ -5,6 +5,7 @@
 #include <thread>
 #include <SFML/Graphics.hpp>
 #include <mutex>
+#include <SFML/Graphics/Font.hpp>
 using namespace std;
 
 //---- PARTIE CLASSE ET FONCTION ----
@@ -74,6 +75,12 @@ public:
         cout << "Metro instancie avec succes" << endl;
     }
 
+    int getPass() {
+        return passager;
+    }
+    int getStatInd() {
+        return stationIndex;
+    }
     float getPos() {
         return(position);
     }
@@ -311,6 +318,7 @@ public:
 };
 
 int main() {
+    //déclaration des rames---------------------------------------
     Station rame1("Bourg-en-Vol", 1, 0, 0);
     Station rame2("Volucite", 2, 500,500);
     Station rame3("Renouet", 3, 1200,1200);
@@ -320,6 +328,7 @@ int main() {
     Station rame7("Levski", 7, 856, 856);
     Station rame8("Neuilly", 8, 1100, 1100);
     Station rame9("Boutroux", 9, 1850, 1850);
+    //------------------------------------------------------------
     vector<Station> LigneA = { rame1, rame2, rame3, rame4, rame5 };
     vector<Station> ligneB = { rame6,rame7,rame8,rame9 };
     Metro metro("Ligne A", 0, LigneA);
@@ -327,7 +336,11 @@ int main() {
     thread metro1(&Metro::deplacer, &metro);
     thread metro2(&Metro::deplacer, &metroB);
     sf::RenderWindow window(sf::VideoMode(1920, 1080), "Système de métro");
-    //debut de la boucle SFML---------------------------------------
+    sf::Font Parisine;
+    if (!Parisine.loadFromFile("Parisine Regular.otf")) {
+        throw("erreur chargement police");
+    }
+    //debut de la bocle SFML---------------------------------------
     while (window.isOpen()) {
         window.clear(sf::Color::White);
         //création des deux metros----------------------
@@ -337,12 +350,13 @@ int main() {
         metroShape2.setFillColor(sf::Color::Green);
         //-----------------------------------------------
         //déplacement graphique des metros---------------
-            metroShape.setPosition(metro.getPos(), 50);
+        metroShape.setPosition(metro.getPos(), 50);
         metroShape2.setPosition(metroB.getPos(), 500);
         window.draw(metroShape);
         window.draw(metroShape2);
         // Dessin de la station--------------------------
         sf::CircleShape stationShape(20);
+        int cpt1=0;
         stationShape.setFillColor(sf::Color::Black);
         sf::RectangleShape ligneARec(sf::Vector2f(1920, 5));
         sf::RectangleShape ligneBRec(sf::Vector2f(1920, 5));
@@ -352,14 +366,50 @@ int main() {
         ligneBRec.setFillColor(sf::Color::Green);
         window.draw(ligneARec);
         window.draw(ligneBRec);
+        sf::Text nomStation;
+        sf::Text affPass;
+        affPass.setColor(sf::Color::Black);
+        affPass.setFont(Parisine);
+        nomStation.setFont(Parisine);
+        nomStation.setCharacterSize(24);
+        nomStation.setFillColor(sf::Color::Black);
+        if (metro.getStatInd() < LigneA.size() - 1) {
+            affPass.setString("Prochain arrêt :" + LigneA[metro.getStatInd() + 1].getNom());
+        }
+        if (metro.getStatInd() == LigneA.size() - 1) {
+            affPass.setString("Prochain arrêt :" + LigneA[metro.getStatInd() + -1].getNom());
+        }
         for (int i = 0; i < LigneA.size(); i++) {
+            string nomStat = LigneA[i].getNom();
+            nomStation.setString(nomStat);
+            nomStation.setPosition(LigneA[i].getDistanceV1()-10, 85);
             stationShape.setPosition(LigneA[i].getDistanceV1()+15,50);
+            affPass.setPosition(200, 700);
+            window.draw(nomStation);
             window.draw(stationShape);
         }
         for (int i = 0; i < ligneB.size(); i++) {
+            string nomStat = ligneB[i].getNom();
+            nomStation.setString(nomStat);
+            nomStation.setPosition(ligneB[i].getDistanceV1() - 5, 535);
             stationShape.setPosition(ligneB[i].getDistanceV1() + 15, 500);
             window.draw(stationShape);
+            window.draw(nomStation);
+            sf::Text LigneAT;
+            sf::Text LigneBT;
+            LigneAT.setFont(Parisine);
+            LigneBT.setFont(Parisine);
+            LigneAT.setString("Ligne A :");
+            LigneAT.setColor(sf::Color::Red);
+            LigneBT.setString("Ligne B :");
+            LigneBT.setColor(sf::Color::Green);
+            LigneAT.setPosition(80, 700);
+            LigneBT.setPosition(80, 800);
+            window.draw(LigneAT);
+            window.draw(LigneBT);
+            window.draw(affPass);
         }
+
         window.display();
     }
     metro1.join();
