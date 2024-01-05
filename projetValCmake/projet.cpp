@@ -383,14 +383,14 @@ int main() {
         if (metro.getStatInd() < LigneA.size() - 1 || metro.getStatInd()-1 == 1) {
             affPass.setString("Prochain arrêt :" + LigneA[metro.getStatInd() + 1].getNom());
         }
-        if (metro.getStatInd() == LigneA.size() - 1 || metro.getVoie() == true) {
-            affPass.setString("Prochain arrêt :" + LigneA[metro.getStatInd()-1].getNom());
+        if (metro.getStatInd() == LigneA.size() - 1 || (metro.getVoie() == true && metro.getStatInd()>1)) {
+            affPass.setString("Prochain arrêt :" + LigneA[metro.getStatInd() - 1].getNom());
         }
 
-        if (metroB.getStatInd() < ligneB.size() - 1 || metroB.getStatInd()-1==6) {
+        if (metroB.getStatInd() < ligneB.size() - 1) {
             affPass2.setString("Prochain arrêt :" + ligneB[metroB.getStatInd() + 1].getNom());
         }
-        if (metroB.getStatInd() == ligneB.size() - 1 || metroB.getVoie() == true) {
+        if ((metroB.getStatInd() == ligneB.size() - 1) || (metroB.getVoie() == true && metroB.getStatInd()>6)) {
             affPass2.setString("Prochain arrêt :" + ligneB[metroB.getStatInd()-1].getNom());
         }
 
